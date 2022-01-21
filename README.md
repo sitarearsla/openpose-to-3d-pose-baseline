@@ -56,16 +56,30 @@ There is one little fix we need to run for the data to have consistent names:
 ```bash
 mv h36m/S1/MyPoseFeatures/D3_Positions/TakingPhoto.cdf \
    h36m/S1/MyPoseFeatures/D3_Positions/Photo.cdf
+   
+mv h36m/S1/MyPoseFeatures/D2_Positions/TakingPhoto.cdf \
+   h36m/S1/MyPoseFeatures/D2_Positions/Photo.cdf
 
 mv h36m/S1/MyPoseFeatures/D3_Positions/TakingPhoto\ 1.cdf \
    h36m/S1/MyPoseFeatures/D3_Positions/Photo\ 1.cdf
+   
+mv h36m/S1/MyPoseFeatures/D2_Positions/TakingPhoto\ 1.cdf \
+   h36m/S1/MyPoseFeatures/D2_Positions/Photo\ 1.cdf
 
 mv h36m/S1/MyPoseFeatures/D3_Positions/WalkingDog.cdf \
    h36m/S1/MyPoseFeatures/D3_Positions/WalkDog.cdf
+   
+mv h36m/S1/MyPoseFeatures/D2_Positions/WalkingDog.cdf \
+   h36m/S1/MyPoseFeatures/D2_Positions/WalkDog.cdf
 
 mv h36m/S1/MyPoseFeatures/D3_Positions/WalkingDog\ 1.cdf \
    h36m/S1/MyPoseFeatures/D3_Positions/WalkDog\ 1.cdf
+   
+mv h36m/S1/MyPoseFeatures/D2_Positions/WalkingDog\ 1.cdf \
+   h36m/S1/MyPoseFeatures/D2_Positions/WalkDog\ 1.cdf
 ```
+
+
 
 ### Quick demo
 
@@ -73,9 +87,7 @@ For a quick demo, you can train for one epoch and visualize the results. To trai
 
 `python src/predict_3dpose.py --camera_frame --residual --batch_norm --dropout 0.5 --max_norm --evaluateActionWise --epochs 1`
 
-This should take about <5 minutes to complete on a GTX 1080, and give you around 56 mm of error on the test set.
-
-Now, to visualize the results, run
+To visualize the results, run
 
 `python src/predict_3dpose.py --camera_frame --residual --batch_norm --dropout 0.5 --max_norm --evaluateActionWise --epochs 1 --sample --load 24371`
 

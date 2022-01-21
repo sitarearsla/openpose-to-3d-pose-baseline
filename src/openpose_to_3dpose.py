@@ -84,7 +84,7 @@ def predict_depth(keypoints):
     actions = data_utils.define_actions(FLAGS.action)
 
     # Load camera parameters
-    SUBJECT_IDS = [5, 6, 7, 8, 9, 11]
+    SUBJECT_IDS = [1, 5, 6, 7, 8, 9, 11]
     this_file = os.path.dirname(os.path.realpath(__file__))
     rcams = cameras.load_cameras(os.path.join(this_file, "..", FLAGS.cameras_path), SUBJECT_IDS)
 
