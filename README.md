@@ -1,6 +1,6 @@
-## 3d-pose-baseline
+## Openpose to 3d-pose-baseline
 
-This is the code for the paper
+This is the up-to-date code for the paper below and extends it to use Openpose outputs.
 
 Julieta Martinez, Rayat Hossain, Javier Romero, James J. Little.
 _A simple yet effective baseline for 3d human pose estimation._
@@ -8,51 +8,26 @@ In ICCV, 2017. https://arxiv.org/pdf/1705.03098.pdf.
 
 The code in this repository was mostly written by
 [Julieta Martinez](https://github.com/una-dinosauria),
-[Rayat Hossain](https://github.com/rayat137) and
-[Javier Romero](https://github.com/libicocco).
+[Rayat Hossain](https://github.com/rayat137),
+[Javier Romero](https://github.com/libicocco) and [S. Arash Hosseini](https://github.com/ArashHosseini)
 
-We provide a strong baseline for 3d human pose estimation that also sheds light
-on the challenges of current approaches. Our model is lightweight and we strive
-to make our code transparent, compact, and easy-to-understand.
+This repository serves as a bridge between [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) 
+2d keypoint outputs and the network proposed in [the original repository](https://github.com/una-dinosauria/3d-pose-baseline) 
+
 
 ### Dependencies
 
-* Python ≥ 3.5
+* Python 3.9
 * [cdflib](https://github.com/MAVENSDC/cdflib)
-* [tensorflow](https://www.tensorflow.org/) 1.0 or later
+* [tensorflow](https://www.tensorflow.org/) 1.15
 
-### First of all
-1. Watch our video: https://youtu.be/Hmi3Pd9x1BE
+### Implementation
 
-2. Clone this repository
+1.Get the data
 
-```bash
-git clone https://github.com/una-dinosauria/3d-pose-baseline.git
-cd 3d-pose-baseline
-mkdir -p data/h36m/
-```
-
-3. Get the data
-
-Go to http://vision.imar.ro/human3.6m/, log in, and download the `D3 Positions` files for subjects `[1, 5, 6, 7, 8, 9, 11]`,
-and put them under the folder `data/h36m`. Your directory structure should look like this
-```bash
-src/
-README.md
-LICENCE
-...
-data/
-  └── h36m/
-    ├── Poses_D3_Positions_S1.tgz
-    ├── Poses_D3_Positions_S11.tgz
-    ├── Poses_D3_Positions_S5.tgz
-    ├── Poses_D3_Positions_S6.tgz
-    ├── Poses_D3_Positions_S7.tgz
-    ├── Poses_D3_Positions_S8.tgz
-    └── Poses_D3_Positions_S9.tgz
-```
-
-Now, move to the data folder, and uncompress all the data
+Go to http://vision.imar.ro/human3.6m/, log in, and download the `D3 Positions` and `D2 Positions` files for subjects `[5, 6, 7, 8, 9, 11]`,
+and put them under the folder `data/h36m`. 
+Uncompress all the data with the tgz format using
 
 ```bash
 cd data/h36m/
@@ -67,7 +42,6 @@ Now, your data directory should look like this:
 data/
   └── h36m/
     ├── metadata.xml
-    ├── S1/
     ├── S11/
     ├── S5/
     ├── S6/
@@ -93,10 +67,6 @@ mv h36m/S1/MyPoseFeatures/D3_Positions/WalkingDog\ 1.cdf \
    h36m/S1/MyPoseFeatures/D3_Positions/WalkDog\ 1.cdf
 ```
 
-And you are done!
-
-Please note that we are currently not supporting SH detections anymore, only training from GT 2d detections is possible now.
-
 ### Quick demo
 
 For a quick demo, you can train for one epoch and visualize the results. To train, run
@@ -105,13 +75,10 @@ For a quick demo, you can train for one epoch and visualize the results. To trai
 
 This should take about <5 minutes to complete on a GTX 1080, and give you around 56 mm of error on the test set.
 
-Now, to visualize the results, simply run
+Now, to visualize the results, run
 
 `python src/predict_3dpose.py --camera_frame --residual --batch_norm --dropout 0.5 --max_norm --evaluateActionWise --epochs 1 --sample --load 24371`
 
-This will produce a visualization similar to this:
-
-![Visualization example](/imgs/viz_example.png?raw=1)
 
 ### Training
 
@@ -120,38 +87,13 @@ To train a model with clean 2d detections, run:
 <!-- `python src/predict_3dpose.py --camera_frame --residual` -->
 `python src/predict_3dpose.py --camera_frame --residual --batch_norm --dropout 0.5 --max_norm --evaluateActionWise`
 
-This corresponds to Table 2, bottom row. `Ours (GT detections) (MA)`
+### Testing
 
-<!--
-To train on Stacked Hourglass detections, run
+To test the performance of the model using the extracted 2D keypoints of a video, run:
 
-`python src/predict_3dpose.py --camera_frame --residual --batch_norm --dropout 0.5 --max_norm --evaluateActionWise --use_sh`
-
-This corresponds to Table 2, next-to-last row. `Ours (SH detections) (MA)`
-
-On a GTX 1080 GPU, this takes <8 ms for forward+backward computation, and
-<6 ms for forward-only computation per batch of 64.
--->
-
-<!--
-### Pre-trained model
-
-We also provide a model pre-trained on ground truth 2d detections, available through [google drive](https://drive.google.com/file/d/0BxWzojlLp259MF9qSFpiVjl0cU0/view?usp=sharing).
-
-To test the model, decompress the file at the top level of this project, and call
-
-`python src/predict_3dpose.py --camera_frame --residual --batch_norm --dropout 0.5 --max_norm --evaluateActionWise --epochs 200 --sample --load 4874200`
--->
-
-<!--
-### Fine-tuned stacked-hourglass detections
-
-You can find the detections produced by Stacked Hourglass after fine-tuning on the H3.6M dataset on [google drive](https://drive.google.com/open?id=0BxWzojlLp259S2FuUXJ6aUNxZkE).
--->
+`python src/openpose_to_3dpose.py --camera_frame --residual --batch_norm --dropout 0.5 --max_norm --evaluateActionWise --epochs 1 --load 97484 --openpose_json_dir ballet`
 
 ### Citing
-
-If you use our code, please cite our work
 
 ```
 @inproceedings{martinez_2017_3dbaseline,
